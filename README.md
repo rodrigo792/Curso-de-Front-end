@@ -1,2 +1,659 @@
-# Curso-de-Front-end
-Front-end completo para você que está iniciando na programação
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vue.js Expert — Do Zero ao Expert em 12 Semanas</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #42d392;
+    --green-dark: #2ab87a;
+    --green-glow: rgba(66,211,146,0.18);
+    --bg: #0a0f0d;
+    --bg2: #0f1a14;
+    --bg3: #152019;
+    --text: #e8f5ee;
+    --muted: #7a9e8a;
+    --card: #111c16;
+    --border: #1e3328;
+    --accent: #7fffd4;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    overflow-x: hidden;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  h1,h2,h3,h4 { font-family: 'Syne', sans-serif; line-height: 1.15; }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 16px 5%;
+    background: rgba(10,15,13,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid var(--border);
+  }
+  .nav-logo {
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+    color: var(--green); letter-spacing: -0.5px;
+  }
+  .nav-cta {
+    background: var(--green); color: #0a0f0d;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.85rem;
+    padding: 9px 22px; border-radius: 6px; text-decoration: none;
+    transition: background .2s, transform .2s;
+    white-space: nowrap;
+  }
+  .nav-cta:hover { background: var(--accent); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; align-items: center; justify-content: center;
+    padding: 140px 5% 80px;
+    position: relative; overflow: hidden;
+    text-align: center;
+  }
+  .hero-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background:
+      radial-gradient(ellipse 80% 60% at 50% 0%, rgba(66,211,146,0.12) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 40% at 80% 80%, rgba(66,211,146,0.06) 0%, transparent 60%);
+  }
+  .hero-grid {
+    position: absolute; inset: 0; z-index: 0; opacity: 0.06;
+    background-image:
+      linear-gradient(var(--green) 1px, transparent 1px),
+      linear-gradient(90deg, var(--green) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+  .hero-inner { position: relative; z-index: 1; max-width: 860px; }
+  .badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(66,211,146,0.1); border: 1px solid rgba(66,211,146,0.3);
+    color: var(--green); font-size: 0.8rem; font-weight: 500;
+    padding: 6px 16px; border-radius: 100px; margin-bottom: 28px;
+    font-family: 'Syne', sans-serif; letter-spacing: 0.5px;
+  }
+  .badge::before { content: '▶'; font-size: 0.65rem; }
+  .hero h1 {
+    font-size: clamp(2.6rem, 6vw, 5rem); font-weight: 800;
+    letter-spacing: -2px; margin-bottom: 24px;
+    line-height: 1.05;
+  }
+  .hero h1 span { color: var(--green); }
+  .hero-sub {
+    font-size: clamp(1rem, 2vw, 1.2rem); color: var(--muted);
+    max-width: 580px; margin: 0 auto 40px; font-weight: 300;
+  }
+  .hero-cta-wrap { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; margin-bottom: 60px; }
+  .btn-primary {
+    background: var(--green); color: #0a0f0d;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1rem;
+    padding: 16px 40px; border-radius: 8px; text-decoration: none;
+    transition: all .25s; display: inline-block;
+    box-shadow: 0 0 40px rgba(66,211,146,0.3);
+  }
+  .btn-primary:hover { background: var(--accent); transform: translateY(-2px); box-shadow: 0 0 60px rgba(66,211,146,0.4); }
+  .btn-ghost {
+    border: 1px solid var(--border); color: var(--muted);
+    font-family: 'Syne', sans-serif; font-weight: 600; font-size: 1rem;
+    padding: 16px 32px; border-radius: 8px; text-decoration: none;
+    transition: all .25s; display: inline-block;
+  }
+  .btn-ghost:hover { border-color: var(--green); color: var(--green); }
+  .hero-stats {
+    display: flex; gap: 48px; justify-content: center; flex-wrap: wrap;
+  }
+  .stat { text-align: center; }
+  .stat-num { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; color: var(--green); }
+  .stat-label { font-size: 0.8rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* SECTION BASE */
+  section { padding: 100px 5%; }
+  .section-tag {
+    font-family: 'Syne', sans-serif; font-size: 0.75rem; font-weight: 700;
+    color: var(--green); text-transform: uppercase; letter-spacing: 3px;
+    margin-bottom: 12px;
+  }
+  .section-title {
+    font-size: clamp(1.8rem, 3.5vw, 2.8rem); font-weight: 800;
+    letter-spacing: -1px; margin-bottom: 16px;
+  }
+  .section-sub { color: var(--muted); max-width: 560px; font-size: 1.05rem; }
+  .centered { text-align: center; }
+  .centered .section-sub { margin: 0 auto; }
+
+  /* FOR WHO */
+  .forwho { background: var(--bg2); }
+  .forwho-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 32px; margin-top: 60px; }
+  @media(max-width:680px){ .forwho-grid { grid-template-columns: 1fr; } }
+  .forwho-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 32px;
+  }
+  .forwho-card.yes { border-top: 3px solid var(--green); }
+  .forwho-card.no { border-top: 3px solid #ff4d4d; }
+  .card-title {
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 1.05rem;
+    margin-bottom: 20px; display: flex; align-items: center; gap: 10px;
+  }
+  .card-title span { font-size: 1.3rem; }
+  .card-list { list-style: none; display: flex; flex-direction: column; gap: 12px; }
+  .card-list li {
+    display: flex; gap: 10px; font-size: 0.95rem; color: var(--muted);
+    padding-bottom: 12px; border-bottom: 1px solid var(--border);
+  }
+  .card-list li:last-child { border: none; padding: 0; }
+  .card-list li::before { content: attr(data-icon); flex-shrink: 0; margin-top: 1px; }
+
+  /* MODULES */
+  .modules-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 16px; margin-top: 60px;
+  }
+  .mod-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px; transition: border-color .2s, transform .2s;
+    position: relative; overflow: hidden;
+  }
+  .mod-card:hover { border-color: var(--green); transform: translateY(-3px); }
+  .mod-num {
+    font-family: 'Syne', sans-serif; font-size: 0.7rem; font-weight: 700;
+    color: var(--green); letter-spacing: 2px; text-transform: uppercase;
+    margin-bottom: 8px; opacity: 0.7;
+  }
+  .mod-title { font-family: 'Syne', sans-serif; font-size: 1rem; font-weight: 700; margin-bottom: 8px; }
+  .mod-desc { font-size: 0.88rem; color: var(--muted); margin-bottom: 14px; }
+  .mod-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .tag {
+    background: rgba(66,211,146,0.1); border: 1px solid rgba(66,211,146,0.2);
+    color: var(--green); font-size: 0.72rem; padding: 3px 10px; border-radius: 100px;
+    font-family: 'Syne', sans-serif; font-weight: 600;
+  }
+  .status-badge {
+    position: absolute; top: 20px; right: 20px;
+    font-size: 0.65rem; font-family: 'Syne', sans-serif; font-weight: 700;
+    padding: 3px 10px; border-radius: 100px; text-transform: uppercase; letter-spacing: 1px;
+  }
+  .status-live { background: rgba(66,211,146,0.15); color: var(--green); border: 1px solid rgba(66,211,146,0.3); }
+  .status-rec { background: rgba(255,200,0,0.1); color: #ffcc00; border: 1px solid rgba(255,200,0,0.3); }
+  .status-soon { background: rgba(120,120,120,0.1); color: #888; border: 1px solid rgba(120,120,120,0.2); }
+
+  /* PROJECTS */
+  .projects { background: var(--bg2); }
+  .projects-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 20px; margin-top: 60px;
+  }
+  .proj-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px; transition: all .25s;
+  }
+  .proj-card:hover { border-color: var(--green); box-shadow: 0 8px 32px rgba(66,211,146,0.1); }
+  .proj-icon {
+    width: 48px; height: 48px; border-radius: 10px;
+    background: rgba(66,211,146,0.1); border: 1px solid rgba(66,211,146,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem; margin-bottom: 16px;
+  }
+  .proj-title { font-family: 'Syne', sans-serif; font-weight: 700; margin-bottom: 6px; }
+  .proj-sub { font-size: 0.85rem; color: var(--muted); margin-bottom: 14px; }
+  .proj-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+  .proj-tag { font-size: 0.72rem; color: var(--muted); background: var(--bg3); padding: 3px 10px; border-radius: 4px; }
+
+  /* TESTIMONIALS */
+  .testimonials-grid {
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px; margin-top: 60px;
+  }
+  .testi-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 28px;
+  }
+  .testi-stars { color: var(--green); font-size: 0.9rem; margin-bottom: 14px; letter-spacing: 2px; }
+  .testi-text { font-size: 0.95rem; color: var(--muted); margin-bottom: 20px; line-height: 1.7; font-style: italic; }
+  .testi-author { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.9rem; }
+  .testi-role { font-size: 0.8rem; color: var(--muted); }
+
+  /* ENDORSEMENT */
+  .endorsement {
+    background: var(--bg2);
+    border-top: 1px solid var(--border); border-bottom: 1px solid var(--border);
+  }
+  .endorse-inner {
+    max-width: 780px; margin: 0 auto;
+    display: grid; grid-template-columns: auto 1fr; gap: 40px; align-items: start;
+  }
+  @media(max-width:600px){ .endorse-inner { grid-template-columns: 1fr; } }
+  .endorse-avatar {
+    width: 80px; height: 80px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--green), #0a4d2e);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Syne', sans-serif; font-size: 1.8rem; font-weight: 800; color: #0a0f0d;
+    flex-shrink: 0;
+  }
+  .endorse-quote {
+    font-size: 1.1rem; color: var(--text); line-height: 1.7;
+    font-style: italic; margin-bottom: 16px;
+  }
+  .endorse-name { font-family: 'Syne', sans-serif; font-weight: 700; color: var(--green); }
+  .endorse-title { font-size: 0.85rem; color: var(--muted); }
+
+  /* INSTRUCTOR */
+  .instructor-inner {
+    display: grid; grid-template-columns: 1fr 1.5fr; gap: 60px; align-items: center; max-width: 900px; margin: 0 auto;
+  }
+  @media(max-width:700px){ .instructor-inner { grid-template-columns: 1fr; text-align: center; } }
+  .inst-avatar {
+    aspect-ratio: 1; border-radius: 16px;
+    background: linear-gradient(160deg, var(--bg3) 0%, rgba(66,211,146,0.12) 100%);
+    border: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 5rem;
+  }
+  .inst-name { font-family: 'Syne', sans-serif; font-size: 2rem; font-weight: 800; margin-bottom: 8px; }
+  .inst-role { color: var(--green); font-size: 0.9rem; font-family: 'Syne', sans-serif; font-weight: 600; margin-bottom: 16px; }
+  .inst-desc { color: var(--muted); margin-bottom: 28px; line-height: 1.75; }
+  .inst-stats { display: flex; gap: 28px; flex-wrap: wrap; }
+  .ist { }
+  .ist-num { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.5rem; color: var(--green); }
+  .ist-label { font-size: 0.78rem; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+
+  /* PRICING */
+  .pricing { background: var(--bg2); }
+  .price-card-wrap { display: flex; justify-content: center; margin-top: 60px; }
+  .price-card {
+    background: var(--card); border: 2px solid var(--green);
+    border-radius: 20px; padding: 48px;
+    max-width: 480px; width: 100%; text-align: center;
+    box-shadow: 0 0 80px rgba(66,211,146,0.15);
+    position: relative;
+  }
+  .popular-tag {
+    position: absolute; top: -14px; left: 50%; transform: translateX(-50%);
+    background: var(--green); color: #0a0f0d;
+    font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.75rem;
+    padding: 5px 20px; border-radius: 100px; white-space: nowrap;
+    text-transform: uppercase; letter-spacing: 1px;
+  }
+  .price-label { color: var(--muted); font-size: 0.9rem; margin-bottom: 8px; }
+  .price-main {
+    font-family: 'Syne', sans-serif; font-size: 3.2rem; font-weight: 800;
+    color: var(--green); line-height: 1;
+  }
+  .price-main small { font-size: 1.2rem; }
+  .price-installments { color: var(--muted); font-size: 0.9rem; margin: 6px 0 28px; }
+  .price-feats { list-style: none; margin-bottom: 36px; text-align: left; display: flex; flex-direction: column; gap: 12px; }
+  .price-feats li {
+    display: flex; gap: 10px; align-items: flex-start;
+    color: var(--muted); font-size: 0.95rem; padding-bottom: 12px;
+    border-bottom: 1px solid var(--border);
+  }
+  .price-feats li:last-child { border: none; padding: 0; }
+  .price-feats li::before { content: '✓'; color: var(--green); font-weight: 700; flex-shrink: 0; }
+  .btn-buy {
+    display: block; width: 100%;
+    background: var(--green); color: #0a0f0d;
+    font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.1rem;
+    padding: 18px; border-radius: 10px; text-decoration: none;
+    transition: all .25s; margin-bottom: 16px;
+    box-shadow: 0 0 40px rgba(66,211,146,0.3);
+  }
+  .btn-buy:hover { background: var(--accent); box-shadow: 0 0 60px rgba(66,211,146,0.5); transform: translateY(-2px); }
+  .guarantee { color: var(--muted); font-size: 0.82rem; }
+  .guarantee b { color: var(--text); }
+
+  /* MEDIA */
+  .media { }
+  .media-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; margin-top: 60px; }
+  .media-card {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 12px; padding: 24px;
+  }
+  .media-source { font-size: 0.78rem; color: var(--green); font-family: 'Syne', sans-serif; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 10px; }
+  .media-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 0.95rem; margin-bottom: 8px; }
+  .media-text { font-size: 0.85rem; color: var(--muted); line-height: 1.6; }
+
+  /* FOOTER */
+  footer {
+    background: var(--bg); border-top: 1px solid var(--border);
+    padding: 40px 5%; text-align: center;
+  }
+  .footer-logo { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 1.2rem; color: var(--green); margin-bottom: 8px; }
+  .footer-copy { color: var(--muted); font-size: 0.82rem; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  .hero-inner > * { animation: fadeUp .6s ease both; }
+  .hero-inner > *:nth-child(1) { animation-delay: .1s; }
+  .hero-inner > *:nth-child(2) { animation-delay: .2s; }
+  .hero-inner > *:nth-child(3) { animation-delay: .3s; }
+  .hero-inner > *:nth-child(4) { animation-delay: .4s; }
+  .hero-inner > *:nth-child(5) { animation-delay: .5s; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--border); }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">Vue.js Expert</div>
+  <a href="https://pay.kiwify.com.br/nq2dlU5?afid=JpgmjCxw" class="nav-cta">Garantir minha vaga →</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-inner">
+    <div class="badge">O curso #1 de Vue.js no Brasil</div>
+    <h1>Domine o <span>Vue.js</span><br>do Zero ao Expert</h1>
+    <p class="hero-sub">De iniciante com JavaScript sólido a Desenvolvedor Vue.js pronto para vagas ou freelas em 12 semanas — mesmo sem experiência profissional prévia.</p>
+    <div class="hero-cta-wrap">
+      <a href="https://pay.kiwify.com.br/nq2dlU5?afid=JpgmjCxw" class="btn-primary">Quero ser Vue.js Expert</a>
+      <a href="#modulos" class="btn-ghost">Ver módulos</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">3.000+</div><div class="stat-label">Alunos</div></div>
+      <div class="stat"><div class="stat-num">40h+</div><div class="stat-label">Conteúdo</div></div>
+      <div class="stat"><div class="stat-num">9+</div><div class="stat-label">Módulos</div></div>
+      <div class="stat"><div class="stat-num">4.9★</div><div class="stat-label">Avaliação</div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOR WHO -->
+<section class="forwho">
+  <div class="centered">
+    <div class="section-tag">Público-alvo</div>
+    <h2 class="section-title">Este curso é para você?</h2>
+    <p class="section-sub">Confira quem vai se beneficiar e quem não vai aproveitar este curso.</p>
+  </div>
+  <div class="forwho-grid">
+    <div class="forwho-card yes">
+      <div class="card-title"><span>✅</span> Este curso É para você</div>
+      <ul class="card-list">
+        <li data-icon="→">Dev iniciante com JavaScript sólido que quer dar o próximo passo com um framework moderno e muito demandado.</li>
+        <li data-icon="→">Dev React/Angular migrando que quer ampliar oportunidades ou migrar para projetos Vue.</li>
+        <li data-icon="→">Freelancer que quer dominar Vue.js para conseguir projetos mais complexos e cobrar mais.</li>
+      </ul>
+    </div>
+    <div class="forwho-card no">
+      <div class="card-title"><span>❌</span> Este curso NÃO é para você</div>
+      <ul class="card-list">
+        <li data-icon="→">Nunca viu HTML/CSS/JS. O curso exige conhecimento básico. Estude os fundamentos primeiro.</li>
+        <li data-icon="→">Quer apenas um certificado rápido sem se comprometer com aprendizado real.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- MODULES -->
+<section id="modulos">
+  <div class="centered">
+    <div class="section-tag">Conteúdo do curso</div>
+    <h2 class="section-title">Mais de 10 Módulos Práticos</h2>
+    <p class="section-sub">Fundamentos, Componentes, DaisyUI, Quasar, Vuetify, Nuxt, Deploy, PrimeVue, PWA e muito mais.</p>
+  </div>
+  <div class="modules-grid">
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Módulo 01</div>
+      <div class="mod-title">Introdução ao Vue.js</div>
+      <div class="mod-desc">Configure seu ambiente e crie seu primeiro projeto com Vite e CDN. 8 tópicos.</div>
+      <div class="mod-tags"><span class="tag">Vue 3</span><span class="tag">Vite</span><span class="tag">CDN</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Módulo 02</div>
+      <div class="mod-title">Fundamentos</div>
+      <div class="mod-desc">Template Syntax, diretivas, reatividade, computed properties, lifecycle hooks. 10 tópicos.</div>
+      <div class="mod-tags"><span class="tag">Reatividade</span><span class="tag">Diretivas</span><span class="tag">Lifecycle</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Módulo 03</div>
+      <div class="mod-title">Componentes</div>
+      <div class="mod-desc">Single File Components, slots, props, events, v-model, provide/inject e lazy loading. 9 tópicos.</div>
+      <div class="mod-tags"><span class="tag">SFC</span><span class="tag">Props</span><span class="tag">Events</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Módulo 04</div>
+      <div class="mod-title">MVP com DaisyUI</div>
+      <div class="mod-desc">Construa um MVP completo com DaisyUI, API Rick & Morty, paginação, modais e deploy. 15 tópicos.</div>
+      <div class="mod-tags"><span class="tag">DaisyUI</span><span class="tag">MVP</span><span class="tag">Tailwind</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Módulo 05</div>
+      <div class="mod-title">Vuetify</div>
+      <div class="mod-desc">Sistema administrativo completo com autenticação JWT, CRUD e integração com API. 21 aulas.</div>
+      <div class="mod-tags"><span class="tag">Vuetify</span><span class="tag">Material</span><span class="tag">CRUD</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Módulo 06</div>
+      <div class="mod-title">Nuxt</div>
+      <div class="mod-desc">Framework full-stack com SSR, file-based routing e MVP real com Supabase. 13 tópicos.</div>
+      <div class="mod-tags"><span class="tag">Nuxt</span><span class="tag">SSR</span><span class="tag">Supabase</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-rec">Em gravação</div>
+      <div class="mod-num">Módulo 07</div>
+      <div class="mod-title">Quasar Framework</div>
+      <div class="mod-desc">Aplicações multiplataforma com Quasar Framework e seus componentes ricos. 7 tópicos.</div>
+      <div class="mod-tags"><span class="tag">Quasar</span><span class="tag">CLI</span><span class="tag">Components</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-soon">Programado</div>
+      <div class="mod-num">Módulo 08</div>
+      <div class="mod-title">Data Visualization</div>
+      <div class="mod-desc">Dashboards interativos com ECharts e ApexCharts. 6 tópicos.</div>
+      <div class="mod-tags"><span class="tag">ECharts</span><span class="tag">ApexCharts</span><span class="tag">Gráficos</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-soon">Programado</div>
+      <div class="mod-num">Módulo 09</div>
+      <div class="mod-title">PrimeVue</div>
+      <div class="mod-desc">Aplicações elegantes com PrimeVue, personalização de temas e MVP completo. 6 tópicos.</div>
+      <div class="mod-tags"><span class="tag">PrimeVue</span><span class="tag">Temas</span><span class="tag">Componentes</span></div>
+    </div>
+    <div class="mod-card">
+      <div class="status-badge status-live">Liberado</div>
+      <div class="mod-num">Bônus</div>
+      <div class="mod-title">Extra Insight</div>
+      <div class="mod-desc">Ferramentas e técnicas práticas que vão além do básico — SEO, Netlify e mais. 3 aulas.</div>
+      <div class="mod-tags"><span class="tag">Bonus</span><span class="tag">SEO</span><span class="tag">Netlify</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- PROJECTS -->
+<section class="projects">
+  <div class="centered">
+    <div class="section-tag">Projetos reais</div>
+    <h2 class="section-title">Portfólio que impressiona</h2>
+    <p class="section-sub">Publique aplicações reais e saia apto a cobrar R$ 3.500+ por projeto ou conseguir vaga front-end.</p>
+  </div>
+  <div class="projects-grid">
+    <div class="proj-card">
+      <div class="proj-icon">🚀</div>
+      <div class="proj-title">MVP DaisyUI</div>
+      <div class="proj-sub">Vite + DaisyUI + REST API</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Vue 3</span><span class="proj-tag">DaisyUI</span><span class="proj-tag">API</span>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-icon">📦</div>
+      <div class="proj-title">MVP Vuetify</div>
+      <div class="proj-sub">Sistema de Estoque completo</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Vuetify</span><span class="proj-tag">JWT Auth</span><span class="proj-tag">CRUD</span>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-icon">🌐</div>
+      <div class="proj-title">Landing Page Nuxt SSR</div>
+      <div class="proj-sub">SEO otimizado + componentes reutilizáveis</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Nuxt</span><span class="proj-tag">SSR</span><span class="proj-tag">SEO</span>
+      </div>
+    </div>
+    <div class="proj-card">
+      <div class="proj-icon">✍️</div>
+      <div class="proj-title">Blog Nuxt Supabase</div>
+      <div class="proj-sub">Login via email/GitHub, RLS, CRUD completo</div>
+      <div class="proj-tags">
+        <span class="proj-tag">Nuxt UI</span><span class="proj-tag">Supabase</span><span class="proj-tag">Auth</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ENDORSEMENT -->
+<section class="endorsement">
+  <div class="centered">
+    <div class="section-tag">Aprovação internacional</div>
+    <h2 class="section-title">Recomendado pelo Autor do Vue 3 Cookbook</h2>
+  </div>
+  <div class="endorse-inner" style="margin-top:48px;">
+    <div class="endorse-avatar">H</div>
+    <div>
+      <p class="endorse-quote">"O Patrick é um dos desenvolvedores Vue.js mais experientes que conheço no Brasil. Seu conhecimento técnico e didática são excepcionais. Este curso é uma oportunidade única de aprender Vue.js com alguém que realmente domina o framework."</p>
+      <div class="endorse-name">Heitor Ramon</div>
+      <div class="endorse-title">Autor dos livros "Vue 3 Cookbook" e "Building Vue.js Applications with GraphQL" — Packt Publishing</div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section>
+  <div class="centered">
+    <div class="section-tag">Depoimentos</div>
+    <h2 class="section-title">O que os alunos dizem</h2>
+    <p class="section-sub">Veja os depoimentos reais de quem está transformando a carreira.</p>
+  </div>
+  <div class="testimonials-grid">
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Como desenvolvedora apaixonada por Vue.js, posso afirmar que este curso é uma oportunidade única. O Patrick tem uma didática excepcional e consegue ensinar conceitos complexos de forma simples e prática."</p>
+      <div class="testi-author">Thayana Mamoré</div>
+      <div class="testi-role">Desenvolvedora Vue.js • Coordenadora de projetos Compass UOL</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Sou desenvolvedor fullstack e já vi muitos cursos, mas esse realmente se destaca. O Patrick consegue conectar teoria com prática de um jeito que faz total diferença. Cada módulo me ajudou a aplicar de imediato no trabalho."</p>
+      <div class="testi-author">Alexsander Sautier</div>
+      <div class="testi-role">Desenvolvedor Fullstack | VueJS Expert | Django Expert</div>
+    </div>
+    <div class="testi-card">
+      <div class="testi-stars">★★★★★</div>
+      <p class="testi-text">"Um curso completo, bem estruturado e com conteúdo extremamente relevante para o mercado. O Patrick domina o assunto e transmite o conhecimento com clareza. Recomendo para qualquer dev que queira se especializar em Vue.js."</p>
+      <div class="testi-author">Jefferson Silva</div>
+      <div class="testi-role">Engenheiro de Software @ Peekerton</div>
+    </div>
+  </div>
+</section>
+
+<!-- INSTRUCTOR -->
+<section style="background: var(--bg2);">
+  <div class="instructor-inner">
+    <div class="inst-avatar">👨‍💻</div>
+    <div>
+      <div class="section-tag">Seu instrutor</div>
+      <div class="inst-name">Patrick Monteiro</div>
+      <div class="inst-role">Desenvolvedor Front-end Sênior • Vue.js Expert</div>
+      <p class="inst-desc">Mais de 11 anos de experiência com desenvolvimento de aplicações Web. Especialista em Vue.js, Quasar Framework e Nuxt. Natural de Abaetetuba-PA, destaque na imprensa nacional por democratizar o acesso à tecnologia para jovens da Amazônia.</p>
+      <div class="inst-stats">
+        <div class="ist"><div class="ist-num">11+</div><div class="ist-label">Anos de exp.</div></div>
+        <div class="ist"><div class="ist-num">3.000+</div><div class="ist-label">Alunos</div></div>
+        <div class="ist"><div class="ist-num">4.9★</div><div class="ist-label">Avaliação</div></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MEDIA -->
+<section class="media">
+  <div class="centered">
+    <div class="section-tag">Na mídia</div>
+    <h2 class="section-title">Destaque na imprensa nacional</h2>
+  </div>
+  <div class="media-grid">
+    <div class="media-card">
+      <div class="media-source">G1 Pará</div>
+      <div class="media-title">Paraense vira referência em tecnologia e cria projeto para ensinar jovens da Amazônia</div>
+      <p class="media-text">Patrick Monteiro criou o curso Vue.js Expert para ajudar jovens da região amazônica a desenvolverem habilidades em tecnologia.</p>
+    </div>
+    <div class="media-card">
+      <div class="media-source">TI Pará</div>
+      <div class="media-title">Desenvolvedor Paraense transforma carreira em Startup</div>
+      <p class="media-text">Com mais de 11 anos de experiência, Patrick lança startup de educação focada em Vue.js criando oportunidades para jovens desenvolvedores.</p>
+    </div>
+    <div class="media-card">
+      <div class="media-source">O Liberal</div>
+      <div class="media-title">Paraense vira referência em tecnologia e cria curso para impulsionar jovens da Amazônia</div>
+      <p class="media-text">Engineer from Abaetetuba-PA cria oportunidades em empresas do Brasil e exterior para jovens da região amazônica.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section class="pricing">
+  <div class="centered">
+    <div class="section-tag">Investimento</div>
+    <h2 class="section-title">Acesso vitalício ao curso completo</h2>
+    <p class="section-sub">Um único pagamento para transformar sua carreira para sempre.</p>
+  </div>
+  <div class="price-card-wrap">
+    <div class="price-card">
+      <div class="popular-tag">Mais popular</div>
+      <div class="price-label">Acesso completo</div>
+      <div class="price-main"><small>R$</small> 649<small>,90</small></div>
+      <div class="price-installments">ou 10x de R$ 78,11 • Acesso vitalício</div>
+      <ul class="price-feats">
+        <li>Acesso vitalício a todos os módulos</li>
+        <li>Mais de 10 módulos com MVPs reais</li>
+        <li>Projetos práticos para portfólio</li>
+        <li>Comunidade exclusiva no WhatsApp</li>
+        <li>Certificado de conclusão reconhecido</li>
+        <li>Novos módulos incluídos sem custo extra</li>
+      </ul>
+      <a href="https://pay.kiwify.com.br/nq2dlU5?afid=JpgmjCxw" class="btn-buy">Quero me tornar Vue.js Expert →</a>
+      <p class="guarantee">🔒 <b>Garantia incondicional de 7 dias.</b> Se não gostar, devolvemos 100% do valor.</p>
+    </div>
+  </div>
+</section>
+
+<!-- FINAL CTA -->
+<section style="text-align:center; padding: 100px 5%;">
+  <div class="section-tag" style="justify-content:center; display:block;">Pronto para começar?</div>
+  <h2 class="section-title" style="max-width:700px; margin: 0 auto 20px;">Junte-se a mais de 3.000 devs que já transformaram suas carreiras</h2>
+  <p style="color: var(--muted); max-width:520px; margin: 0 auto 40px;">Saia apto a cobrar R$ 3.500+ por projeto ou conseguir uma vaga front-end que paga 3x o valor do curso em 90 dias.</p>
+  <a href="https://pay.kiwify.com.br/nq2dlU5?afid=JpgmjCxw" class="btn-primary" style="font-size:1.1rem; padding: 20px 52px;">Garantir minha vaga agora →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">Vue.js Expert</div>
+  <p class="footer-copy">© 2025 Curso Vue.js Expert. Todos os direitos reservados.<br>Feito com 💚 por Patrick Monteiro • Nuxt 4 + Vue.js</p>
+</footer>
+
+</body>
+</html>
